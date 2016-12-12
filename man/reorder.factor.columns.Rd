@@ -4,7 +4,7 @@
 \alias{reorder.factor.columns}
 \title{Reorder factor columns}
 \usage{
-\method{reorder}{factor.columns}(data)
+\method{reorder}{factor.columns}(data, multiclass_mode)
 }
 \arguments{
 \item{data}{Data with factor columns.}

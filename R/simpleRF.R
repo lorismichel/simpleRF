@@ -42,7 +42,7 @@
 simpleRF <- function(formula, data, num_trees = 50, mtry = NULL, 
                      min_node_size = NULL, replace = TRUE, probability = FALSE, 
                      splitrule = NULL, unordered_factors = "ignore", 
-                     num_threads = 1) {
+                     num_threads = 1, multiclass_mode = "old") {
   
   model.data <- model.frame(formula, data)
   
@@ -99,7 +99,7 @@ simpleRF <- function(formula, data, num_trees = 50, mtry = NULL,
   
   if (unordered_factors == "order_once") {
     ## Reorder factor columns depending on response type
-    model.data <- reorder.factor.columns(model.data)
+    model.data <- reorder.factor.columns(model.data, multiclass_mode)
     
     ## Save levels
     covariate_levels <- lapply(model.data[, -1], levels)
