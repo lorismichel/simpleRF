@@ -5,14 +5,15 @@
 ForestClassification <- setRefClass("ForestClassification", 
   contains = "Forest", 
   fields = list(
-    response_levels = "character"), 
+    response_levels = "character", 
+    multiclass_mode = "character"), 
   methods = list(
     
     grow = function(num_threads) {      
       treetype <<- "Classification"
       
       ## Create trees
-      trees <<- replicate(num_trees, TreeClassification$new())
+      trees <<- replicate(num_trees, TreeClassification$new(multiclass_mode = multiclass_mode))
       
       ## Call parent method
       callSuper(num_threads)

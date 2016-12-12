@@ -4,7 +4,8 @@
 ##' Contains all fields and methods used special for classification trees.
 TreeClassification <- setRefClass("TreeClassification", 
   contains = "Tree",
-  fields = list(),
+  fields = list(
+    multiclass_mode = "character"),
   methods = list(
     
     splitNodeInternal = function(nodeID, possible_split_varIDs) {
@@ -41,9 +42,23 @@ TreeClassification <- setRefClass("TreeClassification",
         ## Handle ordered factors
         if (!is.numeric(data_values) & !is.ordered(data_values) & unordered_factors == "order_split") {
           ## Order factor levels
-          num.response <- as.numeric(response)
-          means <- aggregate(num.response ~ data_values, FUN=mean)
-          levels.ordered <- as.character(means$data_values[order(means$num.response)])
+          if (nlevels(response) > 2) {
+            if (multiclass_mode == "old") {
+              num.response <- as.numeric(response)
+              means <- aggregate(num.response ~ data_values, FUN=mean)
+              levels.ordered <- as.character(means$data_values[order(means$num.response)])
+            } else if (multiclass_mode == "largest_class") {
+              largest_class <- names(which.max.random(table(response)))
+              means <- aggregate((response == largest_class) ~ data_values, FUN=mean)
+              levels.ordered <- as.character(means$data_values[order(means[, 2])])
+            } else {
+              stop("Unknown multiclass mode.")
+            }
+          } else {
+            num.response <- as.numeric(response)
+            means <- aggregate(num.response ~ data_values, FUN=mean)
+            levels.ordered <- as.character(means$data_values[order(means$num.response)])
+          }
           
           ## Get all levels not in node
           levels.missing <- setdiff(levels(data_values), levels.ordered)

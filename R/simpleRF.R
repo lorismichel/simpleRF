@@ -42,7 +42,7 @@
 simpleRF <- function(formula, data, num_trees = 50, mtry = NULL, 
                      min_node_size = NULL, replace = TRUE, probability = FALSE, 
                      splitrule = NULL, unordered_factors = "ignore", 
-                     num_threads = 1, multiclass_mode = "old") {
+                     multiclass_mode = "old", num_threads = 1) {
   
   model.data <- model.frame(formula, data)
   
@@ -120,7 +120,8 @@ simpleRF <- function(formula, data, num_trees = 50, mtry = NULL,
                                        data = Data$new(data = model.data), 
                                        formula = formula, unordered_factors = unordered_factors, 
                                        covariate_levels = covariate_levels,
-                                       response_levels = levels(model.data[, 1]))
+                                       response_levels = levels(model.data[, 1]),
+                                       multiclass_mode = multiclass_mode)
   } else if (treetype == "Probability") {
     forest <- ForestProbability$new(num_trees = as.integer(num_trees), mtry = as.integer(mtry), 
                                    min_node_size = as.integer(min_node_size), 
@@ -128,7 +129,8 @@ simpleRF <- function(formula, data, num_trees = 50, mtry = NULL,
                                    data = Data$new(data = model.data), 
                                    formula = formula, unordered_factors = unordered_factors,
                                    covariate_levels = covariate_levels,
-                                   response_levels = levels(model.data[, 1]))
+                                   response_levels = levels(model.data[, 1]), 
+                                   multiclass_mode = multiclass_mode)
   } else if (treetype == "Regression") {
     forest <- ForestRegression$new(num_trees = as.integer(num_trees), mtry = as.integer(mtry), 
                                    min_node_size = as.integer(min_node_size), 

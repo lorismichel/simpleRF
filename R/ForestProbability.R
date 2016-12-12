@@ -5,14 +5,15 @@
 ForestProbability <- setRefClass("ForestProbability", 
   contains = "Forest", 
   fields = list(
-    response_levels = "character"), 
+    response_levels = "character", 
+    multiclass_mode = "character"), 
   methods = list(
     
     grow = function(num_threads) {      
       treetype <<- "Probability"
       
       ## Create trees
-      trees <<- replicate(num_trees, TreeProbability$new())
+      trees <<- replicate(num_trees, TreeProbability$new(multiclass_mode = multiclass_mode))
       
       ## Call parent method
       callSuper(num_threads)
