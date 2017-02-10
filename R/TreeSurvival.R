@@ -6,7 +6,8 @@ TreeSurvival <- setRefClass("TreeSurvival",
   contains = "Tree",
   fields = list(
      timepoints = "numeric",
-     survival = "list"),
+     survival = "list", 
+     survsort_mode = "character"),
   methods = list(
     
     splitNodeInternal = function(nodeID, possible_split_varIDs) {
@@ -56,8 +57,14 @@ TreeSurvival <- setRefClass("TreeSurvival",
         
         ## Handle ordered factors
         if (!is.numeric(data_values) & !is.ordered(data_values) & unordered_factors == "order_split") {
-          ## Use median survival if available or largest quantile available in all strata if median not available
-          levels.ordered <- largest.quantile(response ~ data_values)
+          if (survsort_mode == "median") {
+            ## Use median survival if available or largest quantile available in all strata if median not available
+            levels.ordered <- largest.quantile(response ~ data_values)
+          } else if (survsort_mode == "logrank") {
+            ## Use log-rank scores to sort
+            scores <- aggregate(response~x, FUN=logrank_trafo)
+            levels.ordered <- scores$x[order(scores$response)]
+          }
           
           ## Get all levels not in node
           levels.missing <- setdiff(levels(data_values), levels.ordered)

@@ -42,7 +42,8 @@
 simpleRF <- function(formula, data, num_trees = 50, mtry = NULL, 
                      min_node_size = NULL, replace = TRUE, probability = FALSE, 
                      splitrule = NULL, unordered_factors = "ignore", 
-                     multiclass_mode = "old", num_threads = 1) {
+                     multiclass_mode = "old", survsort_mode = "median",
+                     num_threads = 1) {
   
   model.data <- model.frame(formula, data)
   
@@ -99,7 +100,7 @@ simpleRF <- function(formula, data, num_trees = 50, mtry = NULL,
   
   if (unordered_factors == "order_once") {
     ## Reorder factor columns depending on response type
-    model.data <- reorder.factor.columns(model.data, multiclass_mode)
+    model.data <- reorder.factor.columns(model.data, multiclass_mode, survsort_mode)
     
     ## Save levels
     covariate_levels <- lapply(model.data[, -1], levels)
@@ -147,7 +148,7 @@ simpleRF <- function(formula, data, num_trees = 50, mtry = NULL,
                                  data = Data$new(data = model.data), 
                                  formula = formula, unordered_factors = unordered_factors, 
                                  covariate_levels = covariate_levels,
-                                 timepoints = timepoints)
+                                 timepoints = timepoints, survsort_mode = survsort_mode)
   } else {
     stop("Unkown tree type.")
   }

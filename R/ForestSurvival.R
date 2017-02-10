@@ -6,14 +6,15 @@
 ForestSurvival <- setRefClass("ForestSurvival", 
   contains = "Forest", 
   fields = list(
-     timepoints = "numeric"), 
+     timepoints = "numeric", 
+     survsort_mode = "character"), 
   methods = list(
     
     grow = function(num_threads) {      
       treetype <<- "Survival"
       
       ## Create trees
-      trees <<- replicate(num_trees, TreeSurvival$new(timepoints = timepoints))
+      trees <<- replicate(num_trees, TreeSurvival$new(timepoints = timepoints, survsort_mode = survsort_mode))
       
       ## Call parent method
       callSuper(num_threads)

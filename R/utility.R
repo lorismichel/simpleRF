@@ -46,7 +46,8 @@ largest.quantile <- function(formula) {
 ##' @param data Data with factor columns.
 ##' @return Data with reordered factor columns.
 ##' @author Marvin N. Wright
-reorder.factor.columns <- function(data, multiclass_mode) {
+##' @importFrom coin logrank_trafo
+reorder.factor.columns <- function(data, multiclass_mode, survsort_mode) {
   ## Recode characters and unordered factors
   character.idx <- sapply(data[, -1], is.character)
   ordered.idx <- sapply(data[, -1], is.ordered)
@@ -66,12 +67,14 @@ reorder.factor.columns <- function(data, multiclass_mode) {
   ## Recode each column
   data[, -1][, recode.idx] <- lapply(data[, -1][, recode.idx, drop = FALSE], function(x) {
     if ("Surv" %in% class(response)) {
-      ## Use median survival if available or largest quantile available in all strata if median not available
-      levels.ordered <- largest.quantile(response ~ x)
-      
-      ## Get all levels not in node
-      levels.missing <- setdiff(levels(x), levels.ordered)
-      levels.ordered <- c(levels.missing, levels.ordered)
+      if (survsort_mode == "median") {
+        ## Use median survival if available or largest quantile available in all strata if median not available
+        levels.ordered <- largest.quantile(response ~ x)
+      } else if (survsort_mode == "logrank") {
+        ## Use log-rank scores to sort
+        scores <- aggregate(response~x, FUN=logrank_trafo)
+        levels.ordered <- scores$x[order(scores$response)]
+      }
     } else if (is.factor(response) & nlevels(response) > 2) {
       if (multiclass_mode == "old") {
         means <- aggregate(num.response~x, FUN=mean)
