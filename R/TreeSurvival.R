@@ -62,8 +62,9 @@ TreeSurvival <- setRefClass("TreeSurvival",
             levels.ordered <- largest.quantile(response ~ data_values)
           } else if (survsort_mode == "logrank") {
             ## Use log-rank scores to sort
-            scores <- aggregate(response~x, FUN=logrank_trafo)
-            levels.ordered <- scores$x[order(scores$response)]
+            scores <- coin::logrank_trafo(response)
+            means <- aggregate(scores~data_values, FUN=mean)
+            levels.ordered <- as.character(means$data_values[order(means$scores)])
           }
           
           ## Get all levels not in node
