@@ -42,7 +42,7 @@
 simpleRF <- function(formula, data, num_trees = 50, mtry = NULL, 
                      min_node_size = NULL, replace = TRUE, probability = FALSE, 
                      splitrule = NULL, unordered_factors = "ignore", 
-                     multiclass_mode = "old", survsort_mode = "median",
+                     multiclass_mode = "largest_class", survsort_mode = "logrank",
                      num_threads = 1) {
   
   model.data <- model.frame(formula, data)

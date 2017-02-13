@@ -6,8 +6,8 @@
 \usage{
 simpleRF(formula, data, num_trees = 50, mtry = NULL, min_node_size = NULL,
   replace = TRUE, probability = FALSE, splitrule = NULL,
-  unordered_factors = "ignore", multiclass_mode = "old",
-  survsort_mode = "median", num_threads = 1)
+  unordered_factors = "ignore", multiclass_mode = "largest_class",
+  survsort_mode = "logrank", num_threads = 1)
 }
 \arguments{
 \item{formula}{Object of class \code{formula} or \code{character} describing the model to fit.}
