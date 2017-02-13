@@ -95,8 +95,10 @@ reorder.factor.columns <- function(data, multiclass_mode, survsort_mode) {
         means <- aggregate((response == largest_class) ~ x, FUN=mean)
         levels.ordered <- as.character(means$x[order(means[, 2])])
       } else if (multiclass_mode == "cor") {
-        cr <- cor(table(response, x))
+        tab <- table(droplevels(response), droplevels(x))
+        cr <- cor(tab)
         diag(cr) <- NA
+        num_levels <- nlevels(droplevels(x))
         next_level <- sample(num_levels, 1)
         res <- c(next_level, rep(NA, num_levels - 1))
         for (i in 2:num_levels) {
@@ -104,7 +106,7 @@ reorder.factor.columns <- function(data, multiclass_mode, survsort_mode) {
           next_level <- which.max.random(cr[next_level, ])
           res[i] <- next_level
         }
-        levels.ordered <- as.character(levels(x)[res])
+        levels.ordered <- as.character(levels(droplevels(x))[res])
       } else {
         stop("Unknown multiclass mode.")
       }
