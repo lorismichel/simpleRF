@@ -78,6 +78,8 @@ reorder.factor.columns <- function(data, multiclass_mode, survsort_mode) {
         scores <- logrank_trafo(response)
         means <- aggregate(scores~x, FUN=mean)
         levels.ordered <- as.character(means$x[order(means$scores)])
+      } else {
+        stop("Unknown survsort mode.")
       }
     } else if (is.factor(response) & nlevels(response) > 2) {
       if (multiclass_mode == "old") {

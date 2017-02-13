@@ -65,16 +65,8 @@ TreeSurvival <- setRefClass("TreeSurvival",
             scores <- coin::logrank_trafo(response)
             means <- aggregate(scores~data_values, FUN=mean)
             levels.ordered <- as.character(means$data_values[order(means$scores)])
-          } else if (survsort_mode == "logrankHL") {
-            ## Use log-rank scores to sort
-            scores <- coin::logrank_trafo(response, ties.method = "Hothorn-Lausen")
-            means <- aggregate(scores~data_values, FUN=mean)
-            levels.ordered <- as.character(means$data_values[order(means$scores)])
-          } else if (survsort_mode == "logrankAS") {
-            ## Use log-rank scores to sort
-            scores <- coin::logrank_trafo(response, ties.method = "average-scores")
-            means <- aggregate(scores~data_values, FUN=mean)
-            levels.ordered <- as.character(means$data_values[order(means$scores)])
+          } else {
+            stop("Unknown survsort mode.")
           }
           
           ## Get all levels not in node
