@@ -65,6 +65,11 @@ TreeSurvival <- setRefClass("TreeSurvival",
             scores <- coin::logrank_trafo(response)
             means <- aggregate(scores~data_values, FUN=mean)
             levels.ordered <- as.character(means$data_values[order(means$scores)])
+          } else if (survsort_mode == "logrank_median") {
+            ## Use log-rank scores to sort
+            scores <- coin::logrank_trafo(response)
+            means <- aggregate(scores~data_values, FUN=median)
+            levels.ordered <- as.character(means$data_values[order(means$scores)])
           } else {
             stop("Unknown survsort mode.")
           }
@@ -139,7 +144,8 @@ TreeSurvival <- setRefClass("TreeSurvival",
         ## Compute test statistic depending on splitrule
         if (splitrule == "Logrank") {
           ## Compute logrank test
-          teststat <- survdiff(Surv(response[, 1], response[, 2]) ~ idx)$chisq
+          teststat <- tryCatch(survdiff(Surv(response[, 1], response[, 2]) ~ idx)$chisq, 
+                               error = function(e) {0})
         } else if (splitrule == "mean") {
           time <- response[, 1]
           time_child1 <- time[idx]
