@@ -78,6 +78,11 @@ reorder.factor.columns <- function(data, multiclass_mode, survsort_mode) {
         scores <- logrank_trafo(response)
         means <- aggregate(scores~x, FUN=mean)
         levels.ordered <- as.character(means$x[order(means$scores)])
+      } else if (survsort_mode == "logrank_median") {
+        ## Use log-rank scores to sort
+        scores <- logrank_trafo(response)
+        means <- aggregate(scores~x, FUN=median)
+        levels.ordered <- as.character(means$x[order(means$scores)])
       } else {
         stop("Unknown survsort mode.")
       }
@@ -97,6 +102,10 @@ reorder.factor.columns <- function(data, multiclass_mode, survsort_mode) {
       means <- aggregate(num.response~x, FUN=mean)
       levels.ordered <- as.character(means$x[order(means$num.response)])
     }
+    
+    ## Get all levels not in node
+    levels.missing <- setdiff(levels(x), levels.ordered)
+    levels.ordered <- c(levels.missing, levels.ordered)
     
     ## Return reordered factor
     factor(x, levels = levels.ordered, ordered = TRUE)
