@@ -52,8 +52,10 @@ TreeClassification <- setRefClass("TreeClassification",
               means <- aggregate((response == largest_class) ~ data_values, FUN=mean)
               levels.ordered <- as.character(means$data_values[order(means[, 2])])
             } else if (multiclass_mode == "cor") {
-              cr <- cor(table(response, data_values))
+              tab <- table(droplevels(response), droplevels(data_values))
+              cr <- cor(tab)
               diag(cr) <- NA
+              num_levels <- nlevels(droplevels(data_values))
               next_level <- sample(num_levels, 1)
               res <- c(next_level, rep(NA, num_levels - 1))
               for (i in 2:num_levels) {
@@ -61,7 +63,7 @@ TreeClassification <- setRefClass("TreeClassification",
                 next_level <- which.max.random(cr[next_level, ])
                 res[i] <- next_level
               }
-              levels.ordered <- as.character(levels(data_values)[res])
+              levels.ordered <- as.character(levels(droplevels(data_values))[res])
             } else {
               stop("Unknown multiclass mode.")
             }
