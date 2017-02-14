@@ -6,7 +6,7 @@
 \usage{
 simpleRF(formula, data, num_trees = 50, mtry = NULL, min_node_size = NULL,
   replace = TRUE, probability = FALSE, splitrule = NULL,
-  unordered_factors = "ignore", multiclass_mode = "largest_class",
+  unordered_factors = "ignore", multiclass_mode = "cor",
   survsort_mode = "logrank", num_threads = 1)
 }
 \arguments{
