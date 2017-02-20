@@ -64,6 +64,19 @@ TreeClassification <- setRefClass("TreeClassification",
                 res[i] <- next_level
               }
               levels.ordered <- as.character(levels(droplevels(data_values))[res])
+            } else if (multiclass_mode == "cov") {
+              tab <- table(droplevels(response), droplevels(data_values))
+              cr <- cov(tab)
+              diag(cr) <- NA
+              num_levels <- nlevels(droplevels(data_values))
+              next_level <- sample(num_levels, 1)
+              res <- c(next_level, rep(NA, num_levels - 1))
+              for (i in 2:num_levels) {
+                cr[, next_level] <- NA
+                next_level <- which.max.random(cr[next_level, ])
+                res[i] <- next_level
+              }
+              levels.ordered <- as.character(levels(droplevels(data_values))[res])
             } else {
               stop("Unknown multiclass mode.")
             }
